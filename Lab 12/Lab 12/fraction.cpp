@@ -1,66 +1,103 @@
 //*******************************************************
 
 // Implementation file fraction.cpp implements the member 
-// functions of class Fraction.
+// functions of class fraction.
+
+
+#include <iostream>
+#include <vector>
+using std::cin;
+using std::cout;
+using std::endl;
 
 #include "fraction.h"
-#include <iostream>
- 
-Fraction::Fraction()
+
+
+fraction::fraction(int Numerator, int Denominator, bool reduceInput = true)
 {
-  // FILL IN Code for default constructor.
+	numerator = Numerator;
+	denominator = Denominator;
+
+	if(reduceInput) reduce();
 }
 
-Fraction::Fraction(initNumerator, initDenominator)
+void fraction::reduce()	//Do this bit lmao
 {
-  // FILL IN Code for default constructor.
+
 }
 
-Fraction Fraction::Add(Fraction  frac1) const
-// Pre:  frac1 and self have been initialized.
-// Post: frac1 + self is returned in reduced form.
-
+fraction fraction::getInverse()
 {
-  // FILL IN Code.
+	return fraction(denominator, numerator, false);
 }
 
-Fraction Fraction::Subtract(Fraction  frac1) const
-// Pre:  frac1 and self have been initialized.
-// Post: self - frac1 is returned in reduced form.are 
+fraction fraction::operator+(fraction other)
 {
-  // FILL IN Code.
+	//Find LCM of denominators, and convert fractions to same-base
+	std::pair<fraction, fraction> LCM = convertToCommonDenominator(*this, other);
+	
+	//Add numerators
+	//Return output
+	return fraction(LCM.first.getNumerator() + LCM.second.getNumerator(), LCM.first.getDenominator());
 }
 
-Fraction Fraction::Multiply(Fraction  frac1) const
-// Pre:  frac1 and self have been initialized.
-// Post: self - frac1 is returned in reduced form.are 
-
+fraction fraction::operator-(fraction other)
 {
-  // FILL IN Code.
-}    
+	//Find LCM of denominators, and convert fractions to same-base
+	std::pair<fraction, fraction> LCM = convertToCommonDenominator(*this, other);
 
-Fraction Fraction::Divide(Fraction  frac1) const
-// Pre:  frac1 and self have been initialized.
-// Post: self - frac1 is returned in reduced form.are 
+	//Subtract numerators
+	//Return output
+	return fraction(LCM.first.getNumerator() - LCM.second.getNumerator(), LCM.first.getDenominator());
+}
 
+fraction fraction::operator*(fraction other)
 {
-  // FILL IN Code.
-}    
+	return fraction(numerator * other.getNumerator(), denominator * other.getDenominator());
+}
 
-int Fraction::GetNumerator() const
+fraction fraction::operator*(int other)
 {
-  // FILL IN Code.
-}    
+	return fraction(numerator * other, denominator);
+}
 
-int Fraction::GetDenominator() const
+fraction fraction::operator/(fraction  other)
 {
-  // FILL IN Code.
-}    
+	return (*this) * other.getInverse();
+}
+
+fraction fraction::operator/(int  other)
+{
+	return fraction(numerator, denominator * other);
+}
+
+std::pair<fraction, fraction> fraction::convertToCommonDenominator(fraction first, fraction second)
+{
+	{
+		fraction newFirst = first * second.getDenominator();
+		fraction newSecond = second * first.getDenominator();
+		return std::pair<fraction, fraction>(newFirst, newSecond);
+	}
+
+
+	//This part isn't used currently, but if this system is used it will factor the denominators as small as they can go,
+	//then sort them least -> greatest, then identify what each will need to be multipied by in order to get a common denominator
+	/*{
+	int base1 = first.getDenominator();
+	int base2 = second.getDenominator();
+
+	//Breaks 'value' down into its smallest components (only uses factors
+	auto factor = [] (int value)
+	{
+
+	};
+	}*/
+}
+
+
 
 int main() {
-	Fraction a = Fraction(1, 2);
-	Fraction b = Fraction(1, 4);
-
-	//cout<<a.Divide(b).GetNumerator()<<endl;
+	fraction a = fraction(1, 2);
+	fraction b = fraction(1, 4);
 	cin.ignore();
 }
