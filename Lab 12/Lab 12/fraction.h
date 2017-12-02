@@ -18,6 +18,8 @@ public:
 	void reduce();	//Simplify the fraction as much as possible
 	fraction getInverse();
 
+	void print();
+
 	//Converts first and second to fractions with the same base
 	std::pair<fraction, fraction> convertToCommonDenominator(fraction first, fraction second);
 
@@ -26,6 +28,7 @@ public:
 	fraction operator*(fraction other);
 	fraction operator*(int other);
 	fraction operator/(fraction other);
+	fraction operator/=(fraction other);
 	fraction operator/(int other);
 
 };
