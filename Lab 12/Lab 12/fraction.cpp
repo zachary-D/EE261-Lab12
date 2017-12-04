@@ -12,15 +12,28 @@ fraction::fraction(int Numerator, int Denominator, bool reduceInput)
 	numerator = Numerator;
 	denominator = Denominator;
 
+	if(denominator == 0) throw "Numerator cannot be 0!";
+
+	if(denominator < 0)		//If the denominator is a negative, move the negative up to the top (standard form).  This also will handle negative-dividied-by-negative cases
+	{
+		denominator *= -1;
+		numerator *= -1;
+	}
+
 	if(reduceInput) reduce();
 }
 
-void fraction::reduce()	//Do this bit lmao
+void fraction::reduce()
 {
 	//Idea - [implimented as Method 2] iterate over every value up to the size of the numerator/denominator from 2 -> numer/denom because the smaller values will be factored out first meaning that 2, 3 will be factored out instead of 6
 	//Idea - [implimented by re-introcing Method 1 and tweaking Method 2] Run method 1 first to reduce the fraction efficiently (using method 1, only using predetermined prime numbers),
 			//and then if the numerator and denominator of the resulting fraction are both greater than the last predetermined prime number, apply 
 			//method 2 starting at factor = the last prime + 1
+
+	bool isNegative = (numerator < 0 ? true : false);	//If the numerator is less than 0 it is negative, so the flag is set to true.  The flag is used to store the negative separatley
+					//from the fraction, so the factoring code can work properly.  The negative will be re-introduced later (if applicable) just before the function exits
+
+	if(isNegative) numerator *= -1;	//If the numerator is less than 0, flip it to positive for use inside this function
 
 	std::vector<int> primeFactors {2, 3, 5, 7, 11, 13};	//A vector containing pretermined prime factors, used to efficiently reduce fractions by skipping non-prime numbers
 
@@ -42,8 +55,12 @@ void fraction::reduce()	//Do this bit lmao
 					denominator /= factor;
 				}
 			}
-			else return;	//If we exit here because the numerator and/or denominator is less than the value we're trying to factor, we know that the value is within the list of known primes,
+			else
+			{
+				if(isNegative) numerator *= -1;
+				return;	//If we exit here because the numerator and/or denominator is less than the value we're trying to factor, we know that the value is within the list of known primes,
 							//and therefore can't be reduced further in Method 2, and can be skipped
+			}
 		}
 	}
 
@@ -61,7 +78,7 @@ void fraction::reduce()	//Do this bit lmao
 			}
 		}
 	}
-	return;
+	if(isNegative) numerator *= -1;
 
 
 }
