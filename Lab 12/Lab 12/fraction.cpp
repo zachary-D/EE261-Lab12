@@ -17,15 +17,41 @@ fraction::fraction(int Numerator, int Denominator, bool reduceInput)
 
 void fraction::reduce()	//Do this bit lmao
 {
-	std::vector<int> primeFactors {2, 3, 5, 7, 11, 13};
+	//Idea - [implimented as Method 2] iterate over every value up to the size of the numerator/denominator from 2 -> numer/denom because the smaller values will be factored out first meaning that 2, 3 will be factored out instead of 6
+	//Idea - [implimented by re-introcing Method 1 and tweaking Method 2] Run method 1 first to reduce the fraction efficiently (using method 1, only using predetermined prime numbers),
+			//and then if the numerator and denominator of the resulting fraction are both greater than the last predetermined prime number, apply 
+			//method 2 starting at factor = the last prime + 1
 
-	for(auto iter = primeFactors.begin(); iter != primeFactors.end(); iter++)
+	std::vector<int> primeFactors {2, 3, 5, 7, 11, 13};	//A vector containing pretermined prime factors, used to efficiently reduce fractions by skipping non-prime numbers
+
+
+	//Method 1 - reduces the fraction using a list of known primes
 	{
-		int factor = *iter;
-
-		if(numerator >= factor && denominator >= factor)
+		for(auto iter = primeFactors.begin(); iter != primeFactors.end(); iter++)
 		{
+			int factor = *iter;
 
+			if(numerator >= factor && denominator >= factor)	//If the value we're trying to factor out is bigger than the numerator and/or denominator, it just won't work
+			{
+
+				while(numerator%factor == 0 && denominator%factor == 0)	//If we divide the top and bottom by 'factor' and the remainder for both is 0, we can factor 'factor' out of the fraction
+				{
+
+					//This is handled as individual elements instead of doing it as a fraction / int because we would end up in an infinite loop otherwise
+					numerator /= factor;
+					denominator /= factor;
+				}
+			}
+			else return;	//If we exit here because the numerator and/or denominator is less than the value we're trying to factor, we know that the value is within the list of known primes,
+							//and therefore can't be reduced further in Method 2, and can be skipped
+		}
+	}
+
+	//Method 2 - if the numerator and denominator of the resulting fraction are still greater than the final known prime, start immediatly after the last known prime and check to see
+	{		//if it can be used to reduce the fraction, looping to check for every value up until the numerator or denominator (whichever's lower)
+
+		for(int factor = primeFactors[primeFactors.size() - 1] + 1; factor <= numerator && factor <= denominator; factor++)
+		{
 			while(numerator%factor == 0 && denominator%factor == 0)	//If we divide the top and bottom by 'factor' and the remainder for both is 0, we can factor 'factor' out of the fraction
 			{
 
@@ -34,8 +60,10 @@ void fraction::reduce()	//Do this bit lmao
 				denominator /= factor;
 			}
 		}
-		else break;
 	}
+	return;
+
+
 }
 
 fraction fraction::getInverse()
